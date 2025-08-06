@@ -52,5 +52,5 @@ export const inputBarContainerStyles: SxProps<Theme> = {
 
 export const contentMaxWidthStyles: SxProps<Theme> = {
   width: "100%",
-  maxWidth: 700,
+  maxWidth: 990,
 };
