@@ -41,7 +41,7 @@ export default function ChatArea({ messages }: ChatAreaProps) {
             </Box>
           );
         }
-        
+
         if (m.role === "user") {
           return (
             <Box key={m.id} sx={{ display: "flex", alignItems: "flex-end", justifyContent: "flex-end", gap: 1 }}>
@@ -55,9 +55,12 @@ export default function ChatArea({ messages }: ChatAreaProps) {
         return (
           <Box key={m.id} sx={{ display: "flex", alignItems: "flex-end", justifyContent: "flex-start", gap: 1 }}>
             <img src={assistantIcon} alt="Assistant" style={{ width: 28, height: 28, marginRight: 4 }} />
-            <ChatBubble role="assistant">{m.text}</ChatBubble>
+            <ChatBubble role="assistant">
+              {m.content ?? <Typography sx={{ whiteSpace: "pre-wrap" }}>{m.text}</Typography>}
+            </ChatBubble>
           </Box>
         );
+
       })}
       <div ref={scrollRef} />
     </Box>

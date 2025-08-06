@@ -6,10 +6,13 @@ import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 import type { ChatSession, Message as BaseMessage } from "../types/chat";
 
-// Extend the Message type to support JSX content
-type Message = BaseMessage & {
-  content?: string | JSX.Element;
+type Message = {
+  id: string;
+  role: "user" | "assistant";
+  text?: string; // used for simple strings
+  content?: string | JSX.Element; // used for JSX (like YAML-highlighted blocks)
 };
+
 
 export function useChatManager() {
   const [chats, setChats] = useState<ChatSession[]>([]);
