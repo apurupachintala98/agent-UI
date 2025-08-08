@@ -1,5 +1,4 @@
 import { useEffect, useState, type JSX } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { sendToAgent } from "../api/api";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -22,10 +21,10 @@ export function useChatManager() {
   useEffect(() => {
     if (chats.length === 0) {
       const defaultChat: ChatSession = {
-        id: uuidv4(),
+        id: "",
         title: "Untitled Chat",
         messages: [],
-        session_id: uuidv4().replace(/-/g, "").substring(0, 6),
+        session_id: "",
       };
       setChats([defaultChat]);
       setActiveChatId(defaultChat.id);
@@ -35,10 +34,10 @@ export function useChatManager() {
   // Create a new chat
   const newChat = () => {
     const chat: ChatSession = {
-      id: uuidv4(),
+      id: "",
       title: "New Chat",
       messages: [],
-      session_id: uuidv4().replace(/-/g, "").substring(0, 6),
+      session_id: "",
     };
     setChats((prev) => [chat, ...prev]);
     setActiveChatId(chat.id);
@@ -49,13 +48,13 @@ export function useChatManager() {
   if (!activeChatId) return;
 
   const userMsg: Message = {
-    id: uuidv4(),
+    id: "",
     role: "user",
     text,
   };
 
   const typingMsg: Message = {
-    id: uuidv4(),
+    id: "",
     role: "assistant",
     text: "__typing__",
   };
@@ -121,7 +120,7 @@ export function useChatManager() {
     }
 
     const assistantMsg: Message = {
-      id: uuidv4(),
+      id: "",
       role: "assistant",
       content: replyContent,
     };
