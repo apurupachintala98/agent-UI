@@ -237,119 +237,125 @@ export function useChatManager() {
   };
 
   const sendMessage = async (text: string) => {
-    if (!activeChatId) return;
+  if (!activeChatId) return;
 
-    const userMsg: Message = {
-      role: "user",
-      text,
+  const userMsg: Message = {
+    id: crypto.randomUUID(), 
+    role: "user",
+    text,
+  };
+
+  const typingMsg: Message = {
+    id: crypto.randomUUID(), 
+    role: "assistant",
+    content: "__typing__",
+  };
+
+  let isFirstMessage = false;
+
+  setChats((prevChats) =>
+    prevChats.map((chat) => {
+      if (chat.id !== activeChatId) return chat;
+
+      isFirstMessage = chat.messages.length === 0;
+      const firstSentence = isFirstMessage
+        ? text.split(/[.?!]/)[0].trim()
+        : chat.title;
+
+      return {
+        ...chat,
+        title: isFirstMessage ? firstSentence || "New Chat" : chat.title,
+        messages: [...chat.messages, userMsg, typingMsg],
+      };
+    })
+  );
+
+  try {
+    const chat = chats.find((c) => c.id === activeChatId);
+    const currentSessionId = chat?.session_id || "";
+
+    const response = await sendToAgent(text, isFirstMessage ? "" : currentSessionId);
+    console.log("Agent API response:", response);
+
+    let replyContent: string | JSX.Element = "Agent did not return a valid reply.";
+    let newSessionId = "";
+
+    if (
+      typeof response === "object" &&
+      response !== null &&
+      "result" in response
+    ) {
+      const { result, session_id } = response;
+      newSessionId = session_id;
+
+      const yamlMatch = result.match(/```yaml([\s\S]*?)```/i);
+
+      if (yamlMatch) {
+        const yamlCode = yamlMatch[1].trim();
+        const restText = result.replace(yamlMatch[0], "").trim();
+
+        replyContent = (
+          <div>
+            <div>
+              <strong>YAML Output:</strong>
+              <SyntaxHighlighter language="yaml" style={vscDarkPlus}>
+                {yamlCode}
+              </SyntaxHighlighter>
+            </div>
+            {restText && (
+              <div style={{ whiteSpace: "pre-wrap", marginTop: "1rem" }}>
+                {restText}
+              </div>
+            )}
+          </div>
+        );
+      } else {
+        replyContent = <div style={{ whiteSpace: "pre-wrap" }}>{result}</div>;
+      }
+    }
+
+    const assistantMsg: Message = {
+      id: crypto.randomUUID(),
+      role: "assistant",
+      content: replyContent,
     };
 
-    const typingMsg: Message = {
-  role: "assistant",
-  content: "__typing__",
-};
-
-    let isFirstMessage = false;
-
-    // Add user's message and typing indicator
     setChats((prevChats) =>
       prevChats.map((chat) => {
         if (chat.id !== activeChatId) return chat;
-
-        isFirstMessage = chat.messages.length === 0;
-        const firstSentence = isFirstMessage
-          ? text.split(/[.?!]/)[0].trim()
-          : chat.title;
-
+        const updatedMessages = chat.messages.map((m) =>
+          m.role === "assistant" && m.content === "__typing__" ? assistantMsg : m
+        );
         return {
           ...chat,
-          title: isFirstMessage ? firstSentence || "New Chat" : chat.title,
-          messages: [...chat.messages, userMsg, typingMsg],
+          messages: updatedMessages,
+          session_id: newSessionId || chat.session_id,
         };
       })
     );
-
-    try {
-  const chat = chats.find((c) => c.id === activeChatId);
-  const currentSessionId = chat?.session_id || "";
-
-  const response = await sendToAgent(text, isFirstMessage ? "" : currentSessionId);
-  console.log("Agent API response:", response);
-
-  let replyContent: string | JSX.Element = "Agent did not return a valid reply.";
-  let newSessionId = "";
-
-  if (
-    typeof response === "object" &&
-    response !== null &&
-    "result" in response
-  ) {
-    const { result, session_id } = response;
-    newSessionId = session_id;
-
-    const yamlMatch = result.match(/```yaml([\s\S]*?)```/i);
-
-    if (yamlMatch) {
-      const yamlCode = yamlMatch[1].trim();
-      const restText = result.replace(yamlMatch[0], "").trim();
-
-      replyContent = (
-        <div>
-          <div>
-            <strong>YAML Output:</strong>
-            <SyntaxHighlighter language="yaml" style={vscDarkPlus}>
-              {yamlCode}
-            </SyntaxHighlighter>
-          </div>
-          {restText && (
-            <div style={{ whiteSpace: "pre-wrap", marginTop: "1rem" }}>
-              {restText}
-            </div>
-          )}
-        </div>
-      );
-    } else {
-      replyContent = <div style={{ whiteSpace: "pre-wrap" }}>{result}</div>;
-    }
+  } catch (err) {
+    console.error("Failed to fetch agent response", err);
+    setChats((prevChats) =>
+      prevChats.map((chat) => {
+        if (chat.id !== activeChatId) return chat;
+        const updatedMessages = chat.messages.map((m) =>
+          m.role === "assistant" && m.content === "__typing__"
+            ? {
+                ...m,
+                id: crypto.randomUUID(), 
+                content: "Agent failed to respond.",
+              }
+            : m
+        );
+        return {
+          ...chat,
+          messages: updatedMessages,
+        };
+      })
+    );
   }
+};
 
-  const assistantMsg: Message = {
-    role: "assistant",
-    content: replyContent,
-  };
-
-  setChats((prevChats) =>
-    prevChats.map((chat) => {
-      if (chat.id !== activeChatId) return chat;
-      const updatedMessages = chat.messages.map((m) =>
-        m.role === "assistant" && m.content === "__typing__" ? assistantMsg : m
-      );
-      return {
-        ...chat,
-        messages: updatedMessages,
-        session_id: newSessionId || chat.session_id,
-      };
-    })
-  );
-} catch (err) {
-  console.error("Failed to fetch agent response", err);
-  setChats((prevChats) =>
-    prevChats.map((chat) => {
-      if (chat.id !== activeChatId) return chat;
-      const updatedMessages = chat.messages.map((m) =>
-        m.role === "assistant" && m.content === "__typing__"
-          ? { ...m, content: "Agent failed to respond." }
-          : m
-      );
-      return {
-        ...chat,
-        messages: updatedMessages,
-      };
-    })
-  );
-}
-
-  };
 
   const renameChat = (updatedChat: ChatSession) => {
     setChats((prevChats) =>
