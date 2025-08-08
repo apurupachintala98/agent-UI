@@ -61,17 +61,12 @@ export function useChatManager() {
   };
 
   let currentSessionId = "";
+   let isFirstMessage = false;
 
   setChats((prevChats) =>
     prevChats.map((chat) => {
       if (chat.id !== activeChatId) return chat;
-
-      if (!chat.session_id) {
-        chat.session_id = uuidv4().replace(/-/g, "").substring(0, 6);
-      }
-
-      currentSessionId = chat.session_id;
-
+      
       const isFirstMessage = chat.messages.length === 0;
       const firstSentence = isFirstMessage
         ? text.split(/[.?!]/)[0].trim()
@@ -86,7 +81,9 @@ export function useChatManager() {
   );
 
   try {
-    const response = await sendToAgent(text, currentSessionId);
+    const chat = chats.find((c:any) => c.id === activeChatId);
+    currentSessionId = chat?.session_id || "";
+    const response = await sendToAgent(text, isFirstMessage ? "" : currentSessionId);
     console.log("Agent API response:", response);
 
     let replyContent: string | JSX.Element = "Agent did not return a valid reply.";
@@ -118,6 +115,11 @@ export function useChatManager() {
       }
     }
 
+    let session_id_from_response = "";
+    if (typeof response === "object" && "session_id" in response) {
+      session_id_from_response = response.session_id;
+    }
+
     const assistantMsg: Message = {
       id: uuidv4(),
       role: "assistant",
@@ -133,6 +135,7 @@ export function useChatManager() {
         return {
           ...chat,
           messages: updatedMessages,
+          session_id: session_id_from_response || chat.session_id,
         };
       })
     );
