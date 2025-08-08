@@ -11,8 +11,10 @@ import AnimatedAssistantIcon from "./AnimatedAssistantIcon";
 export interface Message {
   id: string;
   role: "user" | "assistant";
-  text: string;
+  text?: string;
+  content?: string | JSX.Element; // NEW: for assistant messages
 }
+
 
 export interface ChatAreaProps {
   messages: Message[];
@@ -31,7 +33,7 @@ export default function ChatArea({ messages }: ChatAreaProps) {
         const prev = messages[i - 1];
         const isAfterUser = prev?.role === "user";
 
-        if (m.role === "assistant" && m.text === "__typing__") {
+        if (m.role === "assistant" && m.content === "__typing__") {
           return (
             <Box key={m.id} sx={{ display: "flex", alignItems: "flex-end", justifyContent: "flex-start", gap: 1 }}>
               <AnimatedAssistantIcon />
@@ -56,7 +58,9 @@ export default function ChatArea({ messages }: ChatAreaProps) {
           <Box key={m.id} sx={{ display: "flex", alignItems: "flex-end", justifyContent: "flex-start", gap: 1 }}>
             <img src={assistantIcon} alt="Assistant" style={{ width: 28, height: 28, marginRight: 4 }} />
             <ChatBubble role="assistant">
-              {m.content ?? <Typography sx={{ whiteSpace: "pre-wrap" }}>{m.text}</Typography>}
+               {typeof m.content === "string"
+          ? <Typography sx={{ whiteSpace: "pre-wrap" }}>{m.content}</Typography>
+          : m.content ?? <Typography sx={{ whiteSpace: "pre-wrap" }}>{m.text}</Typography>}
             </ChatBubble>
           </Box>
         );

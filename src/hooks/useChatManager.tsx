@@ -245,9 +245,9 @@ export function useChatManager() {
     };
 
     const typingMsg: Message = {
-      role: "assistant",
-      text: "__typing__",
-    };
+  role: "assistant",
+  content: "__typing__",
+};
 
     let isFirstMessage = false;
 
@@ -268,82 +268,6 @@ export function useChatManager() {
         };
       })
     );
-
-    // try {
-    //   const chat = chats.find((c) => c.id === activeChatId);
-    //   const currentSessionId = chat?.session_id || "";
-
-    //   const response = await sendToAgent(text, isFirstMessage ? "" : currentSessionId);
-    //   console.log("Agent API response:", response);
-
-    //   let replyContent: string | JSX.Element = "Agent did not return a valid reply.";
-    //   let newSessionId = "";
-
-    //   if (typeof response === "object" && "result" in response) {
-    //     const { result, session_id } = response;
-    //     newSessionId = session_id;
-
-    //     const yamlMatch = result.match(/```yaml([\s\S]*?)```/i);
-
-    //     if (yamlMatch) {
-    //       const yamlCode = yamlMatch[1].trim();
-    //       const restText = result.replace(yamlMatch[0], "").trim();
-
-    //       replyContent = (
-    //         <div>
-    //           <div>
-    //             <strong>YAML Output:</strong>
-    //             <SyntaxHighlighter language="yaml" style={vscDarkPlus}>
-    //               {yamlCode}
-    //             </SyntaxHighlighter>
-    //           </div>
-    //           {restText && (
-    //             <div style={{ whiteSpace: "pre-wrap", marginTop: "1rem" }}>
-    //               {restText}
-    //             </div>
-    //           )}
-    //         </div>
-    //       );
-    //     } else {
-    //       replyContent = <div style={{ whiteSpace: "pre-wrap" }}>{result}</div>;
-    //     }
-    //   }
-
-    //   const assistantMsg: Message = {
-    //     role: "assistant",
-    //     content: replyContent,
-    //   };
-
-    //   setChats((prevChats) =>
-    //     prevChats.map((chat) => {
-    //       if (chat.id !== activeChatId) return chat;
-    //       const updatedMessages = chat.messages.map((m) =>
-    //         m.text === "__typing__" ? assistantMsg : m
-    //       );
-    //       return {
-    //         ...chat,
-    //         messages: updatedMessages,
-    //         session_id: newSessionId || chat.session_id,
-    //       };
-    //     })
-    //   );
-    // } catch (err) {
-    //   console.error("Failed to fetch agent response", err);
-    //   setChats((prevChats) =>
-    //     prevChats.map((chat) => {
-    //       if (chat.id !== activeChatId) return chat;
-    //       const updatedMessages = chat.messages.map((m) =>
-    //         m.text === "__typing__"
-    //           ? { ...m, text: "Agent failed to respond." }
-    //           : m
-    //       );
-    //       return {
-    //         ...chat,
-    //         messages: updatedMessages,
-    //       };
-    //     })
-    //   );
-    // }
 
     try {
   const chat = chats.find((c) => c.id === activeChatId);
