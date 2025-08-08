@@ -355,7 +355,6 @@ export function useChatManager() {
   let replyContent: string | JSX.Element = "Agent did not return a valid reply.";
   let newSessionId = "";
 
-  // ✅ Use the actual response structure
   if (
     typeof response === "object" &&
     response !== null &&
