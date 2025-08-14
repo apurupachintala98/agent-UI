@@ -51,11 +51,11 @@ export const chatBubblePaper = (isUser: boolean, theme: Theme): SxProps<Theme> =
   paddingLeft: theme.spacing(3),
   paddingRight: theme.spacing(3),
   backgroundColor: isUser
-    ? 'linear-gradient(90deg, #e0eafc 0%, #cfdef3 100%)' // User: soft blue gradient
-    : '#ffffff', // Assistant: soft, warm solid yellow
+    ? '#f0f8ff' 
+    : '#ffffff', 
   color: isUser
-    ? '#1a237e' // User: deep blue text
-    : '#000000', // Assistant: rich brown text
+    ? '#1a237e' 
+    : '#000000', 
   borderRadius: theme.spacing(3),
   maxWidth: isUser ? "60vw" : "48vw",
   minWidth: isUser ? undefined : "120px",
