@@ -52,9 +52,9 @@ export default function Sidebar({
     <Box
       sx={{
         ...sidebarContainer,
-        width: collapsed ? 60 : 320,
-        minWidth: collapsed ? 60 : 240,
-        maxWidth: collapsed ? 60 : 360,
+        width: collapsed ? 70 : 320,
+        minWidth: collapsed ? 70 : 240,
+        maxWidth: collapsed ? 70 : 360,
         alignItems: collapsed ? "center" : "flex-start",
       }}
     >
