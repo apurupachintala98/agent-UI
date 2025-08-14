@@ -56,7 +56,7 @@ export const chatBubblePaper = (isUser: boolean, theme: Theme): SxProps<Theme> =
   color: isUser
     ? '#1a237e' // User: deep blue text
     : '#000000', // Assistant: rich brown text
-  // borderRadius: theme.spacing(3),
+  borderRadius: theme.spacing(3),
   maxWidth: isUser ? "60vw" : "48vw",
   minWidth: isUser ? undefined : "120px",
   minHeight: isUser ? undefined : "40px",
@@ -66,9 +66,9 @@ export const chatBubblePaper = (isUser: boolean, theme: Theme): SxProps<Theme> =
   boxShadow: isUser
     ? '0 2px 8px 0 rgba(76, 110, 245, 0.08)'
     : 'none',
-  // border: isUser
-  //   ? '1px solid #b6c6e6'
-  //   : '1px solid #ffe0a3',
+  border: isUser
+    ? '1px solid #b6c6e6'
+    : 'none',
   fontWeight: 500,
 });
 
