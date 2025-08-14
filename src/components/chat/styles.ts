@@ -52,11 +52,11 @@ export const chatBubblePaper = (isUser: boolean, theme: Theme): SxProps<Theme> =
   paddingRight: theme.spacing(3),
   backgroundColor: isUser
     ? 'linear-gradient(90deg, #e0eafc 0%, #cfdef3 100%)' // User: soft blue gradient
-    : '#fffbe6', // Assistant: soft, warm solid yellow
+    : '#ffffff', // Assistant: soft, warm solid yellow
   color: isUser
     ? '#1a237e' // User: deep blue text
-    : '#7c4700', // Assistant: rich brown text
-  borderRadius: theme.spacing(3),
+    : '#000000', // Assistant: rich brown text
+  // borderRadius: theme.spacing(3),
   maxWidth: isUser ? "60vw" : "48vw",
   minWidth: isUser ? undefined : "120px",
   minHeight: isUser ? undefined : "40px",
@@ -65,10 +65,10 @@ export const chatBubblePaper = (isUser: boolean, theme: Theme): SxProps<Theme> =
   whiteSpace: "pre-wrap",
   boxShadow: isUser
     ? '0 2px 8px 0 rgba(76, 110, 245, 0.08)'
-    : '0 2px 8px 0 rgba(255, 193, 7, 0.08)',
-  border: isUser
-    ? '1px solid #b6c6e6'
-    : '1px solid #ffe0a3',
+    : 'none',
+  // border: isUser
+  //   ? '1px solid #b6c6e6'
+  //   : '1px solid #ffe0a3',
   fontWeight: 500,
 });
 
