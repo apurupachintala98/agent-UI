@@ -47,7 +47,7 @@ export const chatBubbleWrapper = (isUser: boolean): SxProps<Theme> => (
 });
 
 export const chatBubblePaper = (isUser: boolean, theme: Theme): SxProps<Theme> => ({
-  padding: theme.spacing(2),
+  padding: "8px",
   paddingLeft: theme.spacing(3),
   paddingRight: theme.spacing(3),
   backgroundColor: isUser
