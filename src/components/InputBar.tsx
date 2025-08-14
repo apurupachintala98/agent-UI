@@ -38,7 +38,7 @@ export default function InputBar({
         alignItems: "center",
         borderRadius: "28px",
         width: "100%",
-        maxWidth: 700,
+        maxWidth: 985,
         boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
       }}
     >
