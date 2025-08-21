@@ -294,9 +294,9 @@ export function useChatManager() {
         prevChats.map((chat) => {
           if (chat.id !== activeChatId) return chat;
 
-          const filtered = chat.messages.filter(
-            (m) => !(m.role === "assistant" && m.content === "__typing__")
-          );
+           const filtered = chat.messages.filter(
+      (m) => !(m.role === "assistant" && m.content === "__typing__")
+    );
 
           // add all assistant messages separately
           const updatedMessages = [...filtered, ...assistantMessages];
