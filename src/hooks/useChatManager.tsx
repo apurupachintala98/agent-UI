@@ -2,6 +2,9 @@ import { useEffect, useState, type JSX } from "react";
 import { sendToAgent } from "../api/api";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { IconButton } from "@mui/material";
+import DownloadIcon from "@mui/icons-material/Download";
+
 
 import type { ChatSession } from "../types/chat";
 
@@ -231,8 +234,28 @@ export function useChatManager() {
                   padding: "12px",
                   maxWidth: "100%",
                   overflowX: "auto",
+                  position: "relative",
                 }}
               >
+                <IconButton
+                  size="small"
+                  onClick={() => {
+                    const blob = new Blob([yamlCode], { type: "text/yaml" });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.download = "output.yaml";
+                    link.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                  style={{
+                    position: "absolute",
+                    top: 4,
+                    right: 4,
+                  }}
+                >
+                  <DownloadIcon fontSize="small" />
+                </IconButton>
                 <SyntaxHighlighter language="yaml" style={oneLight}>
                   {yamlCode}
                 </SyntaxHighlighter>
@@ -268,7 +291,7 @@ export function useChatManager() {
             content: (
               <div
                 style={{
-                   background: "#FFFDE7",
+                  background: "#FFFDE7",
                   borderRadius: "12px",
                   padding: "12px",
                   maxWidth: "80%",
@@ -294,9 +317,9 @@ export function useChatManager() {
         prevChats.map((chat) => {
           if (chat.id !== activeChatId) return chat;
 
-           const filtered = chat.messages.filter(
-      (m) => !(m.role === "assistant" && m.content === "__typing__")
-    );
+          const filtered = chat.messages.filter(
+            (m) => !(m.role === "assistant" && m.content === "__typing__")
+          );
 
           // add all assistant messages separately
           const updatedMessages = [...filtered, ...assistantMessages];
