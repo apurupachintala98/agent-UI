@@ -6,6 +6,7 @@ import SidebarItem from "./SidebarItem";
 import { sidebarTopItems, sidebarActions } from "./SidebarConfig";
 import type { SidebarTopItem, SidebarActionItem } from "./SidebarConfig";
 import type { ChatSession } from "../../types/chat";
+import logo from "../../assets/Logo";
 
 import {
   sidebarContainer,
@@ -59,7 +60,7 @@ export default function Sidebar({
       }}
     >
       {/* top toggle */}
-      {collapsed ? (
+      {/* {collapsed ? (
         <Box sx={sidebarToggleWrapper}>
           <SidebarItem icon={menuItem.render} onClick={toggle} />
         </Box>
@@ -67,7 +68,23 @@ export default function Sidebar({
         <Stack sx={sidebarHeaderStack} spacing={1}>
           <SidebarItem icon={menuItem.render} onClick={toggle} />
         </Stack>
-      )}
+      )} */}
+
+      {collapsed ? (
+  <Box sx={sidebarToggleWrapper}>
+    <SidebarItem icon={menuItem.render} onClick={toggle} />
+  </Box>
+) : (
+  <Stack
+    direction="row"
+    alignItems="center"
+    spacing={1}
+    sx={sidebarHeaderStack}
+  >
+    <SidebarItem icon={menuItem.render} onClick={toggle} />
+    <Box component="img" src={logo} alt="Logo" sx={{ height: 32 }} />
+  </Stack>
+)}
 
       {/* new chat */}
       <Box sx={{ ...sidebarFullWidthWrapper, mt: collapsed ? 2 : 3 }}>
