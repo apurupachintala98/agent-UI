@@ -1,7 +1,7 @@
 import { useEffect, useState, type JSX } from "react";
 import { sendToAgent } from "../api/api";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 import type { ChatSession } from "../types/chat";
 
@@ -104,7 +104,7 @@ export function useChatManager() {
             <div>
               <div>
                 <strong>YAML Output:</strong>
-                <SyntaxHighlighter language="yaml" style={a11yLight}>
+                <SyntaxHighlighter language="yaml" style={oneLight}>
                   {yamlCode}
                 </SyntaxHighlighter>
               </div>
