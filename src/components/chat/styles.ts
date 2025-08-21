@@ -55,7 +55,7 @@ export const chatBubblePaper = (isUser: boolean, theme: Theme): SxProps<Theme> =
   //   : '#ffffff', 
   backgroundColor: isUser
     ? 'linear-gradient(90deg, #e0eafc 0%, #cfdef3 100%)' // User: soft blue gradient
-    : '#ffffff', // Assistant: soft, warm solid yellow
+    : '#fffbe6', // Assistant: soft, warm solid yellow
   color: isUser
     ? '#1a237e' 
     : '#000000', 
