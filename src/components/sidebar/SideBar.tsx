@@ -59,17 +59,6 @@ export default function Sidebar({
         alignItems: collapsed ? "center" : "flex-start",
       }}
     >
-      {/* top toggle */}
-      {/* {collapsed ? (
-        <Box sx={sidebarToggleWrapper}>
-          <SidebarItem icon={menuItem.render} onClick={toggle} />
-        </Box>
-      ) : (
-        <Stack sx={sidebarHeaderStack} spacing={1}>
-          <SidebarItem icon={menuItem.render} onClick={toggle} />
-        </Stack>
-      )} */}
-
       {collapsed ? (
   <Box sx={sidebarToggleWrapper}>
     <SidebarItem icon={menuItem.render} onClick={toggle} />
@@ -82,7 +71,7 @@ export default function Sidebar({
     sx={sidebarHeaderStack}
   >
     <SidebarItem icon={menuItem.render} onClick={toggle} />
-    <Box component="img" src={logo} alt="Logo" sx={{ height: 32 }} />
+    <Box component="img" src={logo} alt="Logo" sx={{ height: 50 }} />
   </Stack>
 )}
 
