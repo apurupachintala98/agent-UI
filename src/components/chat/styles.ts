@@ -68,10 +68,10 @@ export const chatBubblePaper = (isUser: boolean, theme: Theme): SxProps<Theme> =
   whiteSpace: "pre-wrap",
   boxShadow: isUser
     ? '0 2px 8px 0 rgba(76, 110, 245, 0.08)'
-    : 'none',
+    : '0 2px 8px 0 rgba(255, 193, 7, 0.08)',
   border: isUser
     ? '1px solid #b6c6e6'
-    : 'none',
+    : '1px solid #ffe0a3',
   fontWeight: 500,
 });
 
