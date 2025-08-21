@@ -162,173 +162,175 @@ export function useChatManager() {
   //   }
   // };
 
-const sendMessage = async (text: string) => {
-  if (!activeChatId) return;
+  const sendMessage = async (text: string) => {
+    if (!activeChatId) return;
 
-  const userMsg: Message = {
-    id: crypto.randomUUID(),
-    role: "user",
-    text,
-  };
+    const userMsg: Message = {
+      id: crypto.randomUUID(),
+      role: "user",
+      text,
+    };
 
-  const typingMsg: Message = {
-    id: crypto.randomUUID(),
-    role: "assistant",
-    content: "__typing__",
-  };
+    const typingMsg: Message = {
+      id: crypto.randomUUID(),
+      role: "assistant",
+      content: "__typing__",
+    };
 
-  let isFirstMessage = false;
+    let isFirstMessage = false;
 
-  setChats((prevChats) =>
-    prevChats.map((chat) => {
-      if (chat.id !== activeChatId) return chat;
+    setChats((prevChats) =>
+      prevChats.map((chat) => {
+        if (chat.id !== activeChatId) return chat;
 
-      isFirstMessage = chat.messages.length === 0;
-      const firstSentence = isFirstMessage
-        ? text.split(/[.?!]/)[0].trim()
-        : chat.title;
+        isFirstMessage = chat.messages.length === 0;
+        const firstSentence = isFirstMessage
+          ? text.split(/[.?!]/)[0].trim()
+          : chat.title;
 
-      return {
-        ...chat,
-        title: isFirstMessage ? firstSentence || "New Chat" : chat.title,
-        messages: [...chat.messages, userMsg, typingMsg],
-      };
-    })
-  );
+        return {
+          ...chat,
+          title: isFirstMessage ? firstSentence || "New Chat" : chat.title,
+          messages: [...chat.messages, userMsg, typingMsg],
+        };
+      })
+    );
 
-  try {
-    const chat = chats.find((c) => c.id === activeChatId);
-    const currentSessionId = chat?.session_id || "";
+    try {
+      const chat = chats.find((c) => c.id === activeChatId);
+      const currentSessionId = chat?.session_id || "";
 
-    const response = await sendToAgent(text, isFirstMessage ? "" : currentSessionId);
-    console.log("Agent API response:", response);
+      const response = await sendToAgent(text, isFirstMessage ? "" : currentSessionId);
+      console.log("Agent API response:", response);
 
-    let assistantMessages: Message[] = [];
-    let newSessionId = "";
+      let assistantMessages: Message[] = [];
+      let newSessionId = "";
 
-    if (
-      typeof response === "object" &&
-      response !== null &&
-      "result" in response
-    ) {
-      const { result, session_id } = response;
-      newSessionId = session_id;
+      if (
+        typeof response === "object" &&
+        response !== null &&
+        "result" in response
+      ) {
+        const { result, session_id } = response;
+        newSessionId = session_id;
 
-      const yamlMatch = result.match(/```yaml([\s\S]*?)```/i);
+        const yamlMatch = result.match(/```yaml([\s\S]*?)```/i);
 
-      if (yamlMatch) {
-        const yamlCode = yamlMatch[1].trim();
-        const restText = result.replace(yamlMatch[0], "").trim();
+        if (yamlMatch) {
+          const yamlCode = yamlMatch[1].trim();
+          const restText = result.replace(yamlMatch[0], "").trim();
 
-        // YAML bubble
-        assistantMessages.push({
-          id: crypto.randomUUID(),
-          role: "assistant",
-          content: (
-            <div
-              style={{
-                background: "#FFF9C4", // light yellow
-                borderRadius: "12px",
-                padding: "12px",
-                maxWidth: "80%",
-                overflowX: "auto",
-              }}
-            >
-              <SyntaxHighlighter language="yaml" style={oneLight}>
-                {yamlCode}
-              </SyntaxHighlighter>
-            </div>
-          ),
-        });
-
-        // Text bubble (if exists)
-        if (restText) {
+          // YAML bubble
           assistantMessages.push({
             id: crypto.randomUUID(),
             role: "assistant",
             content: (
               <div
                 style={{
-                  background: "#FFFDE7", // softer yellow
+                  background: "#FFF9C4", // light yellow
+                  borderRadius: "12px",
+                  padding: "12px",
+                  maxWidth: "80%",
+                  overflowX: "auto",
+                }}
+              >
+                <SyntaxHighlighter language="yaml" style={oneLight}>
+                  {yamlCode}
+                </SyntaxHighlighter>
+              </div>
+            ),
+          });
+
+          // Text bubble (if exists)
+          if (restText) {
+            assistantMessages.push({
+              id: crypto.randomUUID(),
+              role: "assistant",
+              content: (
+                <div
+                  style={{
+                    background: "#FFFDE7", // softer yellow
+                    borderRadius: "12px",
+                    padding: "12px",
+                    maxWidth: "80%",
+                    whiteSpace: "pre-wrap",
+                  }}
+                >
+                  {restText}
+                </div>
+              ),
+            });
+          }
+        } else {
+          // Plain text only
+          assistantMessages.push({
+            id: crypto.randomUUID(),
+            role: "assistant",
+            content: (
+              <div
+                style={{
+                  background: "#FFFDE7",
                   borderRadius: "12px",
                   padding: "12px",
                   maxWidth: "80%",
                   whiteSpace: "pre-wrap",
                 }}
               >
-                {restText}
+                {result}
               </div>
             ),
           });
         }
       } else {
-        // Plain text only
+        // Fallback if API doesn’t return a valid result
         assistantMessages.push({
           id: crypto.randomUUID(),
           role: "assistant",
-          content: (
-            <div
-              style={{
-                background: "#FFFDE7",
-                borderRadius: "12px",
-                padding: "12px",
-                maxWidth: "80%",
-                whiteSpace: "pre-wrap",
-              }}
-            >
-              {result}
-            </div>
-          ),
+          content: "Agent did not return a valid reply.",
         });
       }
-    } else {
-      // Fallback if API doesn’t return a valid result
-      assistantMessages.push({
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: "Agent did not return a valid reply.",
-      });
-    }
 
-    // Replace typing message with new messages
-    setChats((prevChats) =>
-      prevChats.map((chat) => {
-        if (chat.id !== activeChatId) return chat;
+      // Replace typing message with new messages
+      setChats((prevChats) =>
+        prevChats.map((chat) => {
+          if (chat.id !== activeChatId) return chat;
 
-        const updatedMessages = [
-          ...chat.messages.filter((m) => !(m.role === "assistant" && m.content === "__typing__")),
-          ...assistantMessages,
-        ];
+          const filtered = chat.messages.filter(
+            (m) => !(m.role === "assistant" && m.content === "__typing__")
+          );
 
-        return {
-          ...chat,
-          messages: updatedMessages,
-          session_id: newSessionId || chat.session_id,
-        };
-      })
-    );
-  } catch (err) {
-    console.error("Failed to fetch agent response", err);
-    setChats((prevChats) =>
-      prevChats.map((chat) => {
-        if (chat.id !== activeChatId) return chat;
-        const updatedMessages = chat.messages.map((m) =>
-          m.role === "assistant" && m.content === "__typing__"
-            ? {
+          // add all assistant messages separately
+          const updatedMessages = [...filtered, ...assistantMessages];
+
+          return {
+            ...chat,
+            messages: updatedMessages,
+            session_id: newSessionId || chat.session_id,
+          };
+        })
+      );
+    } catch (err) {
+      console.error("Failed to fetch agent response", err);
+      setChats((prevChats) =>
+        prevChats.map((chat) => {
+          if (chat.id !== activeChatId) return chat;
+          const updatedMessages = chat.messages.map((m) =>
+            m.role === "assistant" && m.content === "__typing__"
+              ? {
                 ...m,
                 id: crypto.randomUUID(),
                 content: "Agent failed to respond.",
               }
-            : m
-        );
-        return {
-          ...chat,
-          messages: updatedMessages,
-        };
-      })
-    );
-  }
-};
+              : m
+          );
+          return {
+            ...chat,
+            messages: updatedMessages,
+          };
+        })
+      );
+    }
+  };
 
   const renameChat = (updatedChat: ChatSession) => {
     setChats((prevChats) =>
