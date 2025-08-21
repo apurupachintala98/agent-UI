@@ -6,7 +6,7 @@ import SidebarItem from "./SidebarItem";
 import { sidebarTopItems, sidebarActions } from "./SidebarConfig";
 import type { SidebarTopItem, SidebarActionItem } from "./SidebarConfig";
 import type { ChatSession } from "../../types/chat";
-import logo from "../../assets/Logo";
+import logo from "../../assets/Logo.svg";
 
 import {
   sidebarContainer,
