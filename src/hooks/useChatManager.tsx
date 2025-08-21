@@ -269,10 +269,9 @@ export function useChatManager() {
             content: (
               <div
                 style={{
-                  background: "#FFFDE7",
                   borderRadius: "12px",
                   padding: "12px",
-                  maxWidth: "80%",
+                  maxWidth: "100%",
                   whiteSpace: "pre-wrap",
                 }}
               >
