@@ -4,7 +4,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { IconButton } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
-
+import YamlContentBubble from "../hooks/YamlContentBubble";
 
 import type { ChatSession } from "../types/chat";
 
@@ -227,40 +227,7 @@ export function useChatManager() {
           assistantMessages.push({
             id: crypto.randomUUID(),
             role: "assistant",
-            content: (
-              <div
-                style={{
-                  borderRadius: "12px",
-                  padding: "12px",
-                  maxWidth: "100%",
-                  overflowX: "auto",
-                  position: "relative",
-                }}
-              >
-                <IconButton
-                  size="small"
-                  onClick={() => {
-                    const blob = new Blob([yamlCode], { type: "text/yaml" });
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement("a");
-                    link.href = url;
-                    link.download = "output.yaml";
-                    link.click();
-                    URL.revokeObjectURL(url);
-                  }}
-                  style={{
-                    position: "absolute",
-                    top: 4,
-                    right: 4,
-                  }}
-                >
-                  <DownloadIcon fontSize="small" />
-                </IconButton>
-                <SyntaxHighlighter language="yaml" style={oneLight}>
-                  {yamlCode}
-                </SyntaxHighlighter>
-              </div>
-            ),
+            content: <YamlContentBubble yamlCode={yamlCode} />,
           });
 
           // Text bubble (if exists)
