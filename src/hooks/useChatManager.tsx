@@ -4,7 +4,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { IconButton } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
-import YamlContentBubble from "../hooks/YamlContentBubble";
+import {YamlContentBubble} from "../hooks/YamlContentBubble";
 
 import type { ChatSession } from "../types/chat";
 
