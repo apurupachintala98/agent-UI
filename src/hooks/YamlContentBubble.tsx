@@ -10,7 +10,7 @@ type YamlBubbleProps = {
   yamlCode: string;
 };
 
-export function YamlBubble({ yamlCode }: YamlBubbleProps) {
+export function YamlContentBubble({ yamlCode }: YamlBubbleProps) {
   const [collapsed, setCollapsed] = useState(false);
 
   const handleDownload = () => {
